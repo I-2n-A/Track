@@ -1,8 +1,8 @@
 #include "date.h"
 #include <math.h>
 
-// всомогательные функции
-// нахождение расстояния между точками
+// РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё
+// РЅР°С…РѕР¶РґРµРЅРёРµ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ С‚РѕС‡РєР°РјРё
 
 float date:: distance(Point a, Point b)
 {
@@ -10,7 +10,7 @@ float date:: distance(Point a, Point b)
     return sqrt(dx * dx + dy * dy);
 }
 
-// конструктор класса
+// РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
 date::date() 
 
 {
@@ -20,51 +20,51 @@ date::date()
 
 
 Mat date::poisk_konturov(Mat fon, Mat frame) {
-    Mat vichet;//матрица для хранения вычитаемого кодра из фона
+    Mat vichet;//РјР°С‚СЂРёС†Р° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РІС‹С‡РёС‚Р°РµРјРѕРіРѕ РєРѕРґСЂР° РёР· С„РѕРЅР°
     absdiff(frame, fon, vichet);
-    Mat tresh; // матрица для бинарного изображения
-    Mat gray_scale;// матрица изображения в градациях серого
-    vector<vector<Point> > contours; //вектор для хранения контуров
+    Mat tresh; // РјР°С‚СЂРёС†Р° РґР»СЏ Р±РёРЅР°СЂРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+    Mat gray_scale;// РјР°С‚СЂРёС†Р° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІ РіСЂР°РґР°С†РёСЏС… СЃРµСЂРѕРіРѕ
+    vector<vector<Point> > contours; //РІРµРєС‚РѕСЂ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєРѕРЅС‚СѓСЂРѕРІ
     vector<vector<int>> detections;
-    //   Преобразование изображения с движущемся человеком в оттенки серого
+    //   РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ СЃ РґРІРёР¶СѓС‰РµРјСЃСЏ С‡РµР»РѕРІРµРєРѕРј РІ РѕС‚С‚РµРЅРєРё СЃРµСЂРѕРіРѕ
     cvtColor(vichet, gray_scale, COLOR_BGR2GRAY);
-    threshold(gray_scale, tresh, 50, 255, THRESH_BINARY); // Настройка порогового значения 
-    findContours(tresh, contours, RETR_TREE, CHAIN_APPROX_SIMPLE); //поиск контуров
+    threshold(gray_scale, tresh, 50, 255, THRESH_BINARY); // РќР°СЃС‚СЂРѕР№РєР° РїРѕСЂРѕРіРѕРІРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ  
+    findContours(tresh, contours, RETR_TREE, CHAIN_APPROX_SIMPLE); //РїРѕРёСЃРє РєРѕРЅС‚СѓСЂРѕРІ
     vector<vector<Point> > contours_poly(contours.size());
     vector<Rect> boundRect(contours.size());
     double maxArea = 0;
     int ind = 0;
     for (size_t i = 0; i < contours.size(); i++)
     {
-        // находим максимальную площадь контура и его индекс
+        // РЅР°С…РѕРґРёРј РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РїР»РѕС‰Р°РґСЊ РєРѕРЅС‚СѓСЂР° Рё РµРіРѕ РёРЅРґРµРєСЃ
         if (contourArea(contours[i]) > maxArea) {
             maxArea = contourArea(contours[i]);
             ind = i;
         }
-        approxPolyDP(contours[i], contours_poly[i], 1, true); // приближение крайних контуров
-        boundRect[i] = boundingRect(contours_poly[i]);// Получаем ограничивающую рамку этого контура
+        approxPolyDP(contours[i], contours_poly[i], 1, true); //РїСЂРёР±Р»РёР¶РµРЅРёРµ РєСЂР°Р№РЅРёС… РєРѕРЅС‚СѓСЂРѕРІ
+        boundRect[i] = boundingRect(contours_poly[i]);// РџРѕР»СѓС‡Р°РµРј РѕРіСЂР°РЅРёС‡РёРІР°СЋС‰СѓСЋ СЂР°РјРєСѓ СЌС‚РѕРіРѕ РєРѕРЅС‚СѓСЂР°
     }
     
 
     for (size_t i = 0; i < contours.size(); i++)
     {
-        Scalar color = Scalar(0, 0, 0);// цвет рамки = зеленый
-        // изображаем только максимальную рамку и отсеиваем маленькие контуры
+        Scalar color = Scalar(0, 0, 0);// С†РІРµС‚ СЂР°РјРєРё 
+        // РёР·РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЂР°РјРєСѓ Рё РѕС‚СЃРµРёРІР°РµРј РјР°Р»РµРЅСЊРєРёРµ РєРѕРЅС‚СѓСЂС‹
         if ((i == ind) && (contourArea(contours[i]) > 100)) {
-            Scalar font_Color(0, 0, 0);//цвет надписи//
+            Scalar font_Color(0, 0, 0);//С†РІРµС‚ РЅР°РґРїРёСЃРё
             Point y = boundRect[i].tl();
             Point x = boundRect[i].br();
 
-            RotatedRect centr = minAreaRect(contours[i]); // поиск центра контура 
+            RotatedRect centr = minAreaRect(contours[i]); // РїРѕРёСЃРє С†РµРЅС‚СЂР° РєРѕРЅС‚СѓСЂР°  
             Point r = centr.center;
-            update(r);
-            //Положение текста(начало запичи х и у)//
-            int font_size = 1;//Размер шрифта//
+            update(r);//РѕР±РЅРѕРІР»РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ id
             
-            int font_weight = 2;//толщина надписи//
-            putText(frame,to_string(Id), (x, y), FONT_HERSHEY_COMPLEX, font_size, font_Color, font_weight);//Нанесение текста на изображение//
+            int font_size = 1;//Р Р°Р·РјРµСЂ С€СЂРёС„С‚Р°//
+            
+            int font_weight = 2;//С‚РѕР»С‰РёРЅР° РЅР°РґРїРёСЃРё//
+            putText(frame,to_string(Id), (x, y), FONT_HERSHEY_COMPLEX, font_size, font_Color, font_weight);//РќР°РЅРµСЃРµРЅРёРµ С‚РµРєСЃС‚Р° РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёРµ
             rectangle(frame, boundRect[i].tl(), boundRect[i].br(), color, 2);
-            circle(frame, centr.center,15, font_Color, FILLED); //изображение центра
+            circle(frame, centr.center,15, font_Color, FILLED); //РёР·РѕР±СЂР°Р¶РµРЅРёРµ С†РµРЅС‚СЂР°
             
             
         }
@@ -80,7 +80,7 @@ int date::update(Point r) {
         return Id;
     }
     else {
-        float dist; // расстояние между точками
+        float dist; // СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ С‚РѕС‡РєР°РјРё
         dist = distance(r, center.back());
         if (dist < 100) {
             center.emplace_back(r);

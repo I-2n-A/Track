@@ -36,9 +36,9 @@ private:
 public:
 
     date();
-    Mat poisk_konturov(Mat fon, Mat frame); //обработка кадра
+    Mat poisk_konturov(Mat fon, Mat frame); //РѕР±СЂР°Р±РѕС‚РєР° РєР°РґСЂР°
     void print();
-    int update(Point r);// обновление ID
+    int update(Point r);// РѕР±РЅРѕРІР»РµРЅРёРµ ID
 
 };
 #endif // !DATE_H
